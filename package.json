@@ -1,6 +1,6 @@
 {
     "name": "kitchen",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "I think a Pastafarian plundered my colander... Arrrgh!",
     "keywords": [
         "affero",
@@ -37,6 +37,7 @@
         "url": "https://github.com/blinkdog/kitchen.git"
     },
     "dependencies": {
+        "yargs": "1.2.x"
     },
     "devDependencies": {
         "coffee-script": "1.7.x",

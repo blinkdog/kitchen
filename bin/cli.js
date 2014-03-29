@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //---------------------------------------------------------------------------
 
-var kitchen = require('../lib/kitchen');
-kitchen.run();
+var cli = require('../lib/coffeeCli');
+cli.run();
 
 //---------------------------------------------------------------------------
 // end of cli.js
