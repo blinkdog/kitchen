@@ -1,0 +1,47 @@
+{
+    "name": "kitchen",
+    "version": "0.0.1",
+    "description": "I think a Pastafarian plundered my colander... Arrrgh!",
+    "keywords": [
+        "affero",
+	"coffeescript",
+	"file",
+	"flying spaghetti monster",
+	"fsm",
+        "gpl",
+        "gnu",
+	"javascript",
+	"pantry",
+	"pasta",
+	"pastafarian",
+	"pirate",
+	"recipe"
+    ],
+    "homepage": "https://github.com/blinkdog/kitchen",
+    "bugs": "https://github.com/blinkdog/kitchen/issues",
+    "license": "AGPL-3.0",
+    "author": "Patrick Meade <veloxi@ticon.net>",
+    "files": [
+        "bin",
+        "lib",
+        "LICENSE",
+        "README.md",
+        "package.json"
+    ],
+    "main": "./lib/kitchen.js",
+    "bin": {
+        "kitchen": "./bin/cli.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/blinkdog/kitchen.git"
+    },
+    "dependencies": {
+    },
+    "devDependencies": {
+        "coffee-script": "1.7.x",
+        "mocha": "1.18.x",
+	"should": "3.2.x"
+    },
+    "preferGlobal": true
+}
