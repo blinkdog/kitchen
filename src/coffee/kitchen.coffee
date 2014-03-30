@@ -15,6 +15,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------------
 
+exports.bake = (recipe) ->
+  console.log 'Stove currently down for maintenance.'
+  console.log 'Would have baked recipe:', JSON.stringify recipe, undefined, 2
+
 exports.run = ->
   console.log 'Hello, kitchen!'
 

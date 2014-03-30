@@ -16,14 +16,34 @@
 #----------------------------------------------------------------------------
 
 {stderr, stdout} = process
+fs = require 'fs'
+kitchen = require './kitchen'
 
 HELP_TEXT =
+  bake: [ 'Usage: kitchen bake [recipe]' ]
   help: [ 'Usage: kitchen help [subcommand]',
     '',
     'Available subcommands:',
+    '   bake   Create files from recipe files',
     '   help   Obtain subcommand information']
   unknown: [ "kitchen: help: Unknown subcommand" ]
-  
+
+doBake = (params) ->
+  [recipe, more...] = params
+  if not recipe?
+    stderr.write "kitchen: Recipe file required\n"
+    process.exit 1
+  if not fs.existsSync recipe
+    stderr.write "kitchen: cannot stat '" + recipe + "': No such file or directory\n"
+    process.exit 1
+  recipeText = fs.readFileSync recipe
+  try
+    recipeObj = JSON.parse recipeText
+  catch
+    stderr.write "kitchen: Unrecognized recipe file format\n"
+    process.exit 1
+  kitchen.bake recipeObj
+
 doHelp = (params) ->
   [subcommand, more...] = params
   subcommand ?= 'help'
@@ -32,6 +52,7 @@ doHelp = (params) ->
   stdout.write(x + '\n') for x in help
 
 commands =
+  bake: doBake
   help: doHelp
 
 #--------------------------------------------------------
