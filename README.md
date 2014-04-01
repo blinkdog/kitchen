@@ -6,6 +6,15 @@ The kitchen executable provides the interface for baking files from
 recipes. The subsections below document the subcommands recognized
 by kitchen and the purpose/function of those commands.
 
+### add
+Add something to the configuration.
+
+#### add ingredient [ingredient file]
+Add an ingredient file to the local pantry.
+
+#### add pantry [local/remote pantry]
+Add a local or remote pantry to obtain ingredients.
+
 ### bake [recipe]
 Create a file from a recipe file. See the Recipe section below, for
 more information on the recipe file format.

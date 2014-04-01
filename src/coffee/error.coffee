@@ -20,6 +20,11 @@
 writeToStderr = (lines) ->
   stderr.write line + '\n' for line in lines
 
+exports.badJson = (jsonFile) ->
+  errMsg = [ "kitchen: Unable to parse JSON: " + jsonFile ]
+  writeToStderr errMsg
+  process.exit 1
+
 exports.badRecipe = (recipe) ->
   errMsg = [ "kitchen: Invalid recipe file." ]
   errMsg.push "name field is not defined" if not recipe.name?

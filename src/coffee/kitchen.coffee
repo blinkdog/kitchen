@@ -17,12 +17,24 @@
 
 fs = require 'fs'
 path = require 'path'
+url = require 'url'
 
 error = require './error'
+useful = require './useful'
 
 KITCHEN_CONFIG_JSON = 'config.json'
 KITCHEN_DIRECTORY = '.kitchen'
 PANTRY_DIRECTORY = 'pantry'
+
+addPantry = (pantryType, pantryLoc, configFile) ->
+  configJson = fs.readFileSync configFile
+  try
+    configObj = JSON.parse configJson
+  catch
+    error.badJson configFile
+  configObj.pantry[pantryType].push url.format url.parse pantryLoc
+  configObj.pantry[pantryType] = configObj.pantry[pantryType].unique()
+  fs.writeFileSync configFile, JSON.stringify configObj, undefined, 2
 
 getUserDirectory = ->
   switch process.platform
@@ -54,7 +66,24 @@ isValidRecipe = (recipe) ->
     #return false if not ingredient.length?
   # having survived the gauntlet, we return true
   return true
-  
+
+#----------------------------------------------------------------------------
+
+exports.addIngredient = (ingredientPath, options) ->
+  kitchenDir = options?.kitchen || getKitchenDirectory()
+  pantryDir = path.normalize path.join kitchenDir, PANTRY_DIRECTORY
+  console.log 'Unimplemented: Adding ' + ingredientPath + ' to pantry ' + pantryDir
+
+exports.addLocalPantry = (pantryLoc, options) ->
+  kitchenDir = options?.kitchen || getKitchenDirectory()
+  configJsonFile = path.normalize path.join kitchenDir, KITCHEN_CONFIG_JSON
+  addPantry 'local', pantryLoc, configJsonFile
+
+exports.addRemotePantry = (pantryLoc, options) ->
+  kitchenDir = options?.kitchen || getKitchenDirectory()
+  configJsonFile = path.normalize path.join kitchenDir, KITCHEN_CONFIG_JSON
+  addPantry 'remote', pantryLoc, configJsonFile
+
 exports.bake = (recipe, options) ->
   # validate our configuration
   error.noUserDir() if not getUserDirectory()?
@@ -67,7 +96,7 @@ exports.bake = (recipe, options) ->
   console.log 'Would have baked recipe:', JSON.stringify recipe, undefined, 2
 
 exports.init = (params, options) ->
-  kitchenDir = options.kitchen || getKitchenDirectory()
+  kitchenDir = options?.kitchen || getKitchenDirectory()
   # create the kitchen directory if it does not exist
   if not fs.existsSync kitchenDir
     fs.mkdirSync kitchenDir

@@ -18,9 +18,15 @@
 {stderr, stdout} = process
 
 fs = require 'fs'
+url = require 'url'
+
 kitchen = require './kitchen'
 
 HELP_TEXT =
+  add: [ 'Usage: add [type] [object]',
+    '',
+    'Example: add ingredient [ingredient file]'
+    'Example: add pantry [local/remote pantry]']
   bake: [ 'Usage: kitchen bake [recipe]',
     '',
     'Options:',
@@ -36,6 +42,43 @@ HELP_TEXT =
     'Options:',
     '   --kitchen /path/to/kitchen/directory' ]
   unknown: [ "kitchen: help: Unknown subcommand" ]
+
+doAdd = (params, argv) ->
+  [addtype, item, more...] = params
+  if not addtype?
+    stderr.write "kitchen: Type required. Try: 'kitchen help add'\n"
+    process.exit 1
+  switch addtype
+    when 'ingredient'
+      doAddIngredient item, argv
+    when 'pantry'
+      doAddPantry item, argv
+    else
+      stderr.write "kitchen: Unable to add type '" + addtype + "'\n"
+      process.exit 1
+
+doAddIngredient = (ingredientPath, argv) ->
+  if not ingredientPath?
+    stderr.write "kitchen: missing file operand\n"
+    process.exit 1
+  if not fs.existsSync ingredientPath
+    stderr.write "kitchen: " + ingredientPath + ": No such file or directory\n"
+    process.exit 1
+  stats = fs.statSync ingredientPath
+  if stats.isDirectory()
+    stderr.write ingredientPath + " is a directory\n"
+    process.exit 1
+  kitchen.addIngredient ingredientPath, argv
+
+doAddPantry = (pantryLoc, argv) ->
+  if not pantryLoc?
+    stderr.write "kitchen: missing location operand\n"
+    process.exit 1
+  pantryUrlObj = url.parse pantryLoc
+  if pantryUrlObj.protocol?
+    kitchen.addRemotePantry pantryLoc, argv
+  else
+    kitchen.addLocalPantry pantryLoc, argv
 
 doBake = (params, argv) ->
   [recipe, more...] = params
@@ -64,6 +107,7 @@ doHelp = (params) ->
   stdout.write(x + '\n') for x in help
 
 commands =
+  add: doAdd
   bake: doBake
   help: doHelp
   init: doInit
