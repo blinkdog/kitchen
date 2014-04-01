@@ -1,4 +1,4 @@
-# kitchen.coffee
+# error.coffee
 # Copyright 2014 Patrick Meade.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,33 +15,21 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------------
 
-fs = require 'fs'
-path = require 'path'
+{stderr} = process
 
-error = require './error'
+writeToStderr = (lines) ->
+  stderr.write line + '\n' for line in lines
 
-KITCHEN_DIRECTORY = '.kitchen'
+exports.noKitchen = ->
+  writeToStderr [
+    "kitchen: Kitchen has not been initialized.",
+    "Try: 'kitchen help init'"]
+  process.exit 1
 
-getUserDirectory = ->
-  switch process.platform
-    when 'win32'
-      process.env['USERPROFILE']
-    else
-      process.env['HOME']
-
-getKitchenDirectory = ->
-  path.normalize path.join getUserDirectory(), KITCHEN_DIRECTORY
-
-exports.bake = (recipe, options) ->
-  error.noUserDir() if not getUserDirectory()?
-  kitchenDir = options.kitchen || getKitchenDirectory()
-  error.noKitchen() if not fs.exists kitchenDir
-  console.log 'kitchenDir: ' + kitchenDir
-  console.log 'Stove currently down for maintenance.'
-  console.log 'Would have baked recipe:', JSON.stringify recipe, undefined, 2
-
-exports.run = ->
-  console.log 'Hello, kitchen!'
+exports.noUserDir = ->
+  writeToStderr [
+    "kitchen: Home directory is undefined."]
+  process.exit 1
 
 #----------------------------------------------------------------------------
-# end of kitchen.coffee
+# end of error.coffee

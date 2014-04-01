@@ -1,6 +1,28 @@
 # kitchen
 A module to bake files from recipe files.
 
+## kitchen
+The kitchen executable provides the interface for baking files from
+recipes. The subsections below document the subcommands recognized
+by kitchen and the purpose/function of those commands.
+
+### bake [recipe]
+Create a file from a recipe file. See the Recipe section below, for
+more information on the recipe file format.
+
+Options:
+
+    --kitchen /path/to/kitchen/directory
+
+        Default: ${HOME}/.kitchen
+
+### help [subcommand]
+Obtain help documentation on the provided subcommand.
+
+### init
+Initialize a .kitchen configuration and local pantry. The default
+directory is: ${HOME}/.kitchen
+
 ## Recipe
 A recipe file is a [JSON](http://json.org/) file containing recipe data
 fields. A recipe file may end with the extension '.recipe.json' but this

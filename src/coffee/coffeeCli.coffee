@@ -16,19 +16,28 @@
 #----------------------------------------------------------------------------
 
 {stderr, stdout} = process
+
 fs = require 'fs'
 kitchen = require './kitchen'
 
 HELP_TEXT =
-  bake: [ 'Usage: kitchen bake [recipe]' ]
+  bake: [ 'Usage: kitchen bake [recipe]',
+    '',
+    'Options:',
+    '   --kitchen /path/to/kitchen/directory']
   help: [ 'Usage: kitchen help [subcommand]',
     '',
     'Available subcommands:',
     '   bake   Create files from recipe files',
-    '   help   Obtain subcommand information']
+    '   help   Obtain subcommand information',
+    '   init   Initialize a kitchen configuration directory']
+  init: [ 'Usage: kitchen init',
+    '',
+    'Options:',
+    '   --kitchen /path/to/kitchen/directory' ]
   unknown: [ "kitchen: help: Unknown subcommand" ]
 
-doBake = (params) ->
+doBake = (params, argv) ->
   [recipe, more...] = params
   if not recipe?
     stderr.write "kitchen: Recipe file required\n"
@@ -42,7 +51,10 @@ doBake = (params) ->
   catch
     stderr.write "kitchen: Unrecognized recipe file format\n"
     process.exit 1
-  kitchen.bake recipeObj
+  kitchen.bake recipeObj, argv
+
+doInit = (params, argv) ->
+  console.log 'kitchen init not implemented yet'
 
 doHelp = (params) ->
   [subcommand, more...] = params
@@ -54,6 +66,7 @@ doHelp = (params) ->
 commands =
   bake: doBake
   help: doHelp
+  init: doInit
 
 #--------------------------------------------------------
 
@@ -70,7 +83,7 @@ exports.run = ->
     stderr.write "kitchen: Unknown subcommand '" + subcommand + "'\n"
     process.exit 1
 
-  commands[subcommand](params)
+  commands[subcommand](params, argv)
 
 #----------------------------------------------------------------------------
 # end of coffeeCli.coffee
