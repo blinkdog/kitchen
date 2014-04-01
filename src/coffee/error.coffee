@@ -20,6 +20,29 @@
 writeToStderr = (lines) ->
   stderr.write line + '\n' for line in lines
 
+exports.badRecipe = (recipe) ->
+  errMsg = [ "kitchen: Invalid recipe file." ]
+  errMsg.push "name field is not defined" if not recipe.name?
+  errMsg.push "length field is not defined" if not recipe.length?
+  #errMsg.push "hash field is not defined" if not recipe.hash?
+  errMsg.push "version field is not defined" if not recipe.version?
+  if recipe.version?
+    if recipe.version is 0
+      errMsg.push "vendor field is not defined" if not recipe.vendor?
+  errMsg.push "ingredients are not defined" if not recipe.ingredients?
+  if recipe.ingredients?
+    for ingredient in recipe.ingredients
+      errMsg.push "ingredient hash field is not defined" if not ingredient.hash?
+      keyFound = false
+      for hashKey of ingredient.hash
+        keyFound = true
+      errMsg.push "ingredient hash field has no contents" if not keyFound
+      errMsg.push "ingredient offset field is not defined" if not ingredient.offset?
+      #errMsg.push "ingredient length field is not defined" if not ingredient.length?
+  # write the errors that we found to stderr and bail
+  writeToStderr errMsg
+  process.exit 1
+
 exports.noKitchen = ->
   writeToStderr [
     "kitchen: Kitchen has not been initialized.",

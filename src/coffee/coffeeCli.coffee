@@ -54,7 +54,7 @@ doBake = (params, argv) ->
   kitchen.bake recipeObj, argv
 
 doInit = (params, argv) ->
-  console.log 'kitchen init not implemented yet'
+  kitchen.init params, argv
 
 doHelp = (params) ->
   [subcommand, more...] = params
