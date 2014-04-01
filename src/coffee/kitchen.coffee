@@ -20,6 +20,7 @@ path = require 'path'
 url = require 'url'
 
 error = require './error'
+nutrition = require './hash'
 useful = require './useful'
 
 KITCHEN_CONFIG_JSON = 'config.json'
@@ -70,9 +71,27 @@ isValidRecipe = (recipe) ->
 #----------------------------------------------------------------------------
 
 exports.addIngredient = (ingredientPath, options) ->
+  # validate configuration
   kitchenDir = options?.kitchen || getKitchenDirectory()
   pantryDir = path.normalize path.join kitchenDir, PANTRY_DIRECTORY
-  console.log 'Unimplemented: Adding ' + ingredientPath + ' to pantry ' + pantryDir
+  error.noPantry() if not fs.existsSync pantryDir
+  # load the ingredient data to be added to the pantry
+  data = fs.readFileSync ingredientPath
+  # determine where the ingredient hashes will live
+  result =
+    dir: {}
+    hash: {}
+    path: {}
+  for algorithm in [ 'ripemd160', 'sha512', 'whirlpool' ]
+    result.hash[algorithm] = nutrition.hashIt algorithm, data
+    result.dir[algorithm] = path.normalize path.join pantryDir, algorithm
+    fs.mkdirSync result.dir[algorithm] if not fs.existsSync result.dir[algorithm]
+    result.path[algorithm] = path.normalize path.join result.dir[algorithm], result.hash[algorithm]
+  # write the file to the primary destination
+  fs.writeFileSync result.path['sha512'], data
+  # link the others to the primary
+  fs.symlinkSync result.path['sha512'], result.path['ripemd160']
+  fs.symlinkSync result.path['sha512'], result.path['whirlpool']
 
 exports.addLocalPantry = (pantryLoc, options) ->
   kitchenDir = options?.kitchen || getKitchenDirectory()

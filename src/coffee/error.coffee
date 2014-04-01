@@ -54,9 +54,14 @@ exports.noKitchen = ->
     "Try: 'kitchen help init'"]
   process.exit 1
 
+exports.noPantry = ->
+  writeToStderr [
+    "kitchen: Unable to locate pantry." ]
+  process.exit 1
+
 exports.noUserDir = ->
   writeToStderr [
-    "kitchen: Home directory is undefined."]
+    "kitchen: Home directory is undefined." ]
   process.exit 1
 
 #----------------------------------------------------------------------------

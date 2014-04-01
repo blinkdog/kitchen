@@ -7,13 +7,20 @@ recipes. The subsections below document the subcommands recognized
 by kitchen and the purpose/function of those commands.
 
 ### add
-Add something to the configuration.
+Add something to the kitchen. Such as a local or remote pantry to
+look up and obtain ingredients, or an ingredient to a local pantry.
 
 #### add ingredient [ingredient file]
 Add an ingredient file to the local pantry.
 
+Options:
+
+    --kitchen /path/to/kitchen/directory
+
+        Default: ${HOME}/.kitchen
+
 #### add pantry [local/remote pantry]
-Add a local or remote pantry to obtain ingredients.
+Add a local or remote pantry to look up and obtain ingredients.
 
 ### bake [recipe]
 Create a file from a recipe file. See the Recipe section below, for
